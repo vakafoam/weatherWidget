@@ -11,11 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var weather_service_1 = require('../service/weather.service');
 var weather_1 = require('../model/weather');
+var constants_1 = require('../constants/constants');
 var WeatherComponent = (function () {
     function WeatherComponent(service) {
         this.service = service;
         // need to initialize data object, not to get an error while data is loading
         this.weatherData = new weather_1.Weather(null, null, null, null, null);
+        this.currentSpeedUnit = "kph";
+        this.currentTempUnit = "celsius";
+        this.currentLocation = "";
+        this.icons = new Skycons();
+        this.dataReceived = false;
     }
     WeatherComponent.prototype.ngOnInit = function () {
         /*   All logic here:
@@ -37,6 +43,7 @@ var WeatherComponent = (function () {
             .subscribe(function (position) {
             _this.pos = position;
             _this.getCurrentWeather();
+            _this.getLocationName();
         }, function (err) { return console.error(err); });
     };
     WeatherComponent.prototype.getCurrentWeather = function () {
@@ -49,9 +56,57 @@ var WeatherComponent = (function () {
             _this.weatherData.humidity = weather["currently"]["humidity"];
             _this.weatherData.icon = weather["currently"]["icon"];
             console.log("weather: ", _this.weatherData);
+            _this.setIcon();
+            _this.dataReceived = true;
         }, function (err) { return console.log(err); });
     };
+    WeatherComponent.prototype.getLocationName = function () {
+        var _this = this;
+        this.service.getLocationName(this.pos.coords.latitude, this.pos.coords.longitude)
+            .subscribe(function (loc) {
+            //console.log(loc);
+            _this.currentLocation = loc["results"][2]["formatted_address"];
+            //console.log("Where am I: " + this.currentLocation);
+        });
+    };
+    WeatherComponent.prototype.toggleUnits = function () {
+        this.toggleTempUnits();
+        this.toggleSpeedUnits();
+    };
+    WeatherComponent.prototype.toggleTempUnits = function () {
+        if (this.currentTempUnit == "fahrenheit") {
+            this.currentTempUnit = "celsius";
+        }
+        else {
+            this.currentTempUnit = "fahrenheit";
+        }
+    };
+    WeatherComponent.prototype.toggleSpeedUnits = function () {
+        if (this.currentSpeedUnit == "kph") {
+            this.currentSpeedUnit = "mph";
+        }
+        else {
+            this.currentSpeedUnit = "kph";
+        }
+    };
+    WeatherComponent.prototype.setIcon = function () {
+        // Add an icon based on the API data received
+        this.icons.add("icon", this.weatherData.icon);
+        this.icons.play();
+    };
+    WeatherComponent.prototype.setStyles = function () {
+        // select a style from stored in the constant to pass to [ngStyle] binding on html
+        if (this.weatherData.icon) {
+            this.icons.color = constants_1.WEATHER_COLORS[this.weatherData.icon]["color"];
+            return constants_1.WEATHER_COLORS[this.weatherData.icon];
+        }
+        else {
+            this.icons.color = constants_1.WEATHER_COLORS["default"]["color"];
+            return constants_1.WEATHER_COLORS["default"];
+        }
+    };
     WeatherComponent = __decorate([
+        // 3d party JS library, has no TS definition file
         core_1.Component({
             moduleId: module.id,
             selector: 'weather-widget',
