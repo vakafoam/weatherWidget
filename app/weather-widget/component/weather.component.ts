@@ -26,6 +26,7 @@ export class WeatherComponent implements OnInit {
     currentLocation = "";
     icons = new Skycons();
     dataReceived = false;
+    date: string;
 
     constructor(private service: WeatherService) { }
 
@@ -44,9 +45,12 @@ export class WeatherComponent implements OnInit {
             */
 
         this.getCurrentLocation();
+
     }
 
     getCurrentLocation() {
+        var d = new Date();
+        this.date = this.getFormattedDate();
         this.service.getCurrentLocation()
             .subscribe(position => {
                 this.pos = position;
@@ -116,5 +120,23 @@ export class WeatherComponent implements OnInit {
             this.icons.color = WEATHER_COLORS["default"]["color"];
             return WEATHER_COLORS["default"];
         }
+    }
+
+    refreshData() {
+        this.getCurrentLocation();
+    }
+
+    getFormattedDate(): string {
+        var date = new Date();
+
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+
+        var str = day + "/" + month + "/" + date.getFullYear() + "    " + hour + ":" + min + ":" + sec;
+
+        return str;
     }
 }

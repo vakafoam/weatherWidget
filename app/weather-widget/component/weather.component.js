@@ -39,6 +39,8 @@ var WeatherComponent = (function () {
     };
     WeatherComponent.prototype.getCurrentLocation = function () {
         var _this = this;
+        var d = new Date();
+        this.date = this.getFormattedDate();
         this.service.getCurrentLocation()
             .subscribe(function (position) {
             _this.pos = position;
@@ -104,6 +106,19 @@ var WeatherComponent = (function () {
             this.icons.color = constants_1.WEATHER_COLORS["default"]["color"];
             return constants_1.WEATHER_COLORS["default"];
         }
+    };
+    WeatherComponent.prototype.refreshData = function () {
+        this.getCurrentLocation();
+    };
+    WeatherComponent.prototype.getFormattedDate = function () {
+        var date = new Date();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+        var str = day + "/" + month + "/" + date.getFullYear() + "    " + hour + ":" + min + ":" + sec;
+        return str;
     };
     WeatherComponent = __decorate([
         // 3d party JS library, has no TS definition file

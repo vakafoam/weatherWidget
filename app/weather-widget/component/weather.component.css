@@ -15,11 +15,15 @@
     background-color: transparent;
 }
 #location-wrapper {
-    font-size: 1.2rem;
+    font-size: .8rem;
     padding-top: .4rem;
 }
 #location-icon {
     padding-right: .5rem;
+}
+#refreshBtn {
+    background-color: transparent;
+    margin-top: 2rem;
 }
 .card-block {
     padding: 1.5rem 0;  

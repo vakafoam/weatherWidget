@@ -1,12 +1,18 @@
-<div class="card" (click)="toggleUnits()" [ngStyle]="setStyles()">
+<div class="card" [ngStyle]="setStyles()">
     <div class="card-header" [class.invisible]="!dataReceived">
         <!-- invisible property hides the header before the data is received, while keeping the document structure-->
         <div class="col-xs-8" id="location-wrapper">
             <p><i class="fa fa-map-marker" aria-hidden="true" id="location-icon"> </i>{{currentLocation}}</p>
+            <p>Date: {{date}}</p>
         </div>
         <div class="col-xs-4 text-xs-right">
             <!--  | 2 pipes transforming and then formatting the value -->
             <h1>{{ weatherData.temp | tempUnit: currentTempUnit | number: '.0-1' }}&deg;</h1>
+        </div>
+        <div class="col-xs-12 text-xs-center">
+            <button class="btn" id="refreshBtn" (click)="refreshData()">
+                <i class="fa fa-refresh" aria-hidden="true"></i>
+            </button>
         </div>
     </div>
     <div class="card-block">
@@ -17,7 +23,7 @@
         <canvas id="icon" [hidden]="!dataReceived"></canvas>
         <p>{{weatherData.summary}}</p>
     </div>
-    <div class="card-footer" [class.invisible]="!dataReceived">
+    <div class="card-footer" (click)="toggleUnits()" [class.invisible]="!dataReceived">
         <div class="row" id="detail-row">
             <div class="col-xs-5">
                 <p>Wind</p>
